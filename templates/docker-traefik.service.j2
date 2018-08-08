@@ -34,7 +34,7 @@ ExecStart=/usr/bin/docker run --rm \
   --docker.swarmmode \
 {% endif %}
 {% if traefik_metrics_prometheus_enabled %}
-  --metrics
+  --metrics \
   --metrics.prometheus \
 {% endif %}
   --api=true \
