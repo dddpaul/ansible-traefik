@@ -1,0 +1,46 @@
+[Unit]
+Description=Traefik proxy service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run --rm \
+  --name traefik \
+  --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock,readonly \
+  --mount type=bind,source={{ traefik_host_config_dir }}/conf,target=/etc/traefik/conf,readonly \
+  --mount type=bind,source={{ traefik_host_tls_dir }},target=/etc/traefik/tls,readonly \
+  --mount type=bind,source=/var/tmp,target=/etc/traefik/acme \
+  --network {{ traefik_network }} \
+  -p 443:443 -p 8443:8443 \
+  -e DNSIMPLE_OAUTH_TOKEN={{ traefik_dnsimple_oauth_token }} \
+  -e DNSIMPLE_BASE_URL=https://api.dnsimple.com \
+  {{ traefik_docker_image }} \
+  --configfile=/etc/traefik/conf/traefik.toml \
+  --entryPoints='Name:https Address::443 TLS:/etc/traefik/tls/default.crt,/etc/traefik/tls/default.key' \
+  --defaultEntryPoints=https \
+  --acme.entryPoint=https \
+  --acme.email={{ traefik_acme_email }} \
+  --acme.storage=/etc/traefik/acme/acme.json \
+  --acme.domains={{ ansible_domain }} \
+  --acme.onHostRule=true \
+  --acme.dnsChallenge \
+  --acme.dnsChallenge.provider=dnsimple \
+  --docker \
+  --docker.watch \
+  --docker.domain={{ ansible_domain }} \
+  --docker.exposedbydefault={{ traefik_docker_exposedbydefault_enabled }} \
+{% if traefik_docker_swarm_enabled %}
+  --docker.swarmmode \
+{% endif %}
+{% if traefik_metrics_prometheus_enabled %}
+  --metrics.prometheus \
+{% endif %}
+  --api=true \
+  --api.dashboard=true \
+  --api.entrypoint=api
+
+ExecStop=/usr/bin/docker stop -t 10 traefik
+
+[Install]
+WantedBy=default.target

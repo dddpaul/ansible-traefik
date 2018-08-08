@@ -1,0 +1,7 @@
+- name: "has installed {{ traefik_service_name }}"
+  include: install.yml
+  when: (not flush_all) and (not delete_data)
+
+- name: "has uninstalled {{ traefik_service_name }}"
+  include: uninstall.yml
+  when: flush_all

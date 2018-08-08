@@ -1,0 +1,22 @@
+---
+- name: "traefik restart"
+  become: true
+  shell: systemctl daemon-reload
+  notify: traefik restart service
+
+- name: "traefik restart service"
+  become: true
+  service: 
+    name: "{{ traefik_service_name }}"
+    state: restarted
+    enabled: yes
+
+- name: "reload systemctl daemon"
+  become: true
+  shell: systemctl daemon-reload
+  notify: reset failed
+
+- name: "reset failed"
+  become: true
+  shell: systemctl reset-failed
+  

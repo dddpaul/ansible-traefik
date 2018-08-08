@@ -1,0 +1,16 @@
+flush_all: false
+delete_data: false
+
+traefik_network: bridge
+traefik_docker_image: traefik:v1.6.4
+traefik_dnsimple_oauth_token: xxx
+traefik_acme_email: some@example.com
+traefik_host_config_dir: /etc/traefik
+traefik_host_tls_dir: /etc/pki/realms/{{ ansible_fqdn }}
+traefik_service_name: traefik
+traefik_docker_swarm_enabled: false
+traefik_docker_exposedbydefault_enabled: false
+traefik_metrics_prometheus_enabled: false
+
+# admin / traefik
+traefik_api_auth_user: "admin:$apr1$y4px/3RX$UQW87s85kwN7l5o0K5Ge51"

@@ -1,0 +1,12 @@
+[entryPoints]
+
+  [entryPoints.api]
+  address = ":8443"
+
+  [entryPoints.api.auth.basic]
+  users = ["{{ traefik_api_auth_user }}"]
+
+  [entryPoints.api.tls]
+    [[entryPoints.api.tls.certificates]]
+      certFile = "/etc/traefik/tls/default.crt"
+      keyFile = "/etc/traefik/tls/default.key"
