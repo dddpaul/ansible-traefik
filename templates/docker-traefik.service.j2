@@ -39,7 +39,7 @@ ExecStart=/usr/bin/docker run --rm \
 {% endif %}
   --api=true \
   --api.dashboard=true \
-  --api.entrypoint=api
+  --api.entrypoint=traefik
 
 ExecStop=/usr/bin/docker stop -t 10 traefik
 
